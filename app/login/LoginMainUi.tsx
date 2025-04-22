@@ -1,36 +1,50 @@
 'use client';
 
-import {useState} from 'react';
+// pages/LoginMainUi.tsx
+import React, {useEffect} from 'react';
 import {Phone} from 'lucide-react';
 import ActionButton from "@/app/core/component/ActionButton";
 import EditText from "@/app/core/component/AppEditText";
-import {loginRepository} from "@/app/login/LoginRepository";
+import {useRouter} from "next/navigation";
+import {observer} from 'mobx-react-lite';
+import {loginViewModel} from "@/app/login/LoginViewModel";
 
-export default function LoginMainUi() {
-    const [mobile, setMobile] = useState('');
-    const [otp, setOtp] = useState('');
-    const [showOtp, setShowOtp] = useState(false);
+const LoginMainUi = observer(() => {
+    const router = useRouter();
+
+    // Local state subscription to MobX observable values
+    const {mobile, otp, showOtp, loading, error} = loginViewModel;
 
     const handleSendOtp = () => {
         if (mobile.length === 10) {
-            loginRepository.sendOtp(mobile).then()
+            loginViewModel.sendOtp(mobile).then(() => {
+            });
         } else {
             alert('Enter a valid mobile number');
         }
     };
 
     const handleSubmit = () => {
-        alert(`Logging in with mobile: ${mobile} and OTP: ${otp}`);
+        if (mobile.length === 10 && otp.length > 0) {
+            loginViewModel.verifyOtp(mobile, otp).then(() => {
+                router.replace("/dashboard")
+            });
+        }
     };
+
+    useEffect(() => {
+
+    }, []);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
             <div className="bg-white shadow-xl border border-gray-200 rounded-2xl p-8 w-full max-w-sm">
                 <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+
                 <EditText
                     name="mobile"
                     value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
+                    onChange={(e) => loginViewModel.setMobile(e.target.value)}
                     placeholder="Enter mobile number"
                     type="tel"
                     icon={<Phone size={16}/>}
@@ -39,25 +53,34 @@ export default function LoginMainUi() {
 
                 {showOtp && (
                     <EditText
-                        name="Enter OTP"
+                        name="otp"
                         value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter mobile number"
+                        onChange={(e) => loginViewModel.setOtp(e.target.value)}
+                        placeholder="Enter OTP"
                         type="tel"
                         icon={<Phone size={16}/>}
                         className="mb-4"
                     />
                 )}
 
+                {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+
                 {!showOtp ? (
-                    <ActionButton text="Send OTP" onClick={handleSendOtp} status={"idle"}/>
+                    <ActionButton
+                        text="Send OTP"
+                        onClick={handleSendOtp}
+                        status={loading ? "loading" : "idle"}
+                    />
                 ) : (
                     <ActionButton
+                        text="Submit"
                         onClick={handleSubmit}
-                        status={"idle"}
-                        text="Submit"/>
+                        status={loading ? "loading" : "idle"}
+                    />
                 )}
             </div>
         </div>
     );
-}
+});
+
+export default LoginMainUi;

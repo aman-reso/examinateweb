@@ -1,6 +1,7 @@
 import {apiRequest} from "@/app/network/GenericApiHandler";
-import {RequestOtpReqBody} from "@/app/login/Requests";
-
+import {RequestOtpReqBody, VerifyOtpReqBody} from "@/app/login/Requests";
+import {ApiResponse} from "@/app/data/ApiResponse";
+import {RequestOtpResponse} from "@/app/login/LoginResponse";
 
 export const loginRepository = {
 
@@ -9,7 +10,7 @@ export const loginRepository = {
         if (!requestBody.isValid()) {
             throw new Error("Invalid phone number");
         }
-        return await apiRequest<{ success: boolean; message?: string }, RequestOtpReqBody>({
+        return await apiRequest<ApiResponse<RequestOtpResponse>, RequestOtpReqBody>({
             url: "users/request-otp",
             method: "POST",
             body: requestBody,
@@ -18,10 +19,10 @@ export const loginRepository = {
 
 
     verifyOtp: async (mobile: string, otp: string) => {
-        return await apiRequest<{ success: boolean; message?: string }>({
-            url: "/api/auth/verify-otp",
+        return await apiRequest<ApiResponse<RequestOtpResponse>, VerifyOtpReqBody>({
+            url: "users/verify-otp",
             method: "POST",
-            body: {mobile, otp},
+            body: new VerifyOtpReqBody(mobile, otp),
         });
     },
 };

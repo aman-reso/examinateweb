@@ -1,6 +1,7 @@
 import React from "react";
 
 interface EditTextProps {
+    key?: any;
     label?: string;
     name: string;
     value: string;
@@ -14,6 +15,7 @@ interface EditTextProps {
 }
 
 const EditText: React.FC<EditTextProps> = ({
+                                               key,
                                                label,
                                                name,
                                                value,
@@ -32,9 +34,11 @@ const EditText: React.FC<EditTextProps> = ({
                     {label}
                 </label>
             )}
-            <div className="flex items-center border border-gray-300 rounded-md p-2 bg-white focus-within:ring-2 focus-within:ring-blue-500 transition">
+            <div
+                className="flex items-center border border-gray-300 rounded-md p-2 bg-white focus-within:ring-2 focus-within:ring-blue-500 transition">
                 {icon && <div className="text-gray-500 mr-2">{icon}</div>}
                 <input
+                    key={key}
                     id={name}
                     name={name}
                     type={type}

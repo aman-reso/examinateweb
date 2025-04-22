@@ -10,3 +10,13 @@ export class RequestOtpReqBody {
         return this.phoneNumber.length === 10;
     }
 }
+export class VerifyOtpReqBody {
+    constructor(
+        public phoneNumber: string,
+        public otp: string
+    ) {}
+
+    isValid() {
+        return !!this.phoneNumber && !!this.otp;
+    }
+}
