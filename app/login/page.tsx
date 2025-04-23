@@ -4,6 +4,7 @@ import {useRouter} from "next/navigation";
 import React, {useEffect} from "react";
 import LoginMainUi from "@/app/login/LoginMainUi";
 import SupportedExamsForm from "@/app/admin/input/exam/SupportedExamFormUi";
+import DashboardPage from "@/app/dashboard/page";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -14,7 +15,7 @@ const LoginPage: React.FC = () => {
     //         return
     //     }
     // }, [router]);
-    return <SupportedExamsForm/>;
+    return <DashboardPage/>;
 };
 
 export default LoginPage;
